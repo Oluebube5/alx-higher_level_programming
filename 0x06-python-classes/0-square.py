@@ -1,10 +1,4 @@
 #!/usr/bin/python3
-"""
-New class Square
-"""
-
-
 class Square:
-    """ Empty class """
+    """Represents an empty square."""
     pass
-Footer
