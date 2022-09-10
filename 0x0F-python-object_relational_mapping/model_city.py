@@ -1,18 +1,21 @@
 #!/usr/bin/python3
-"""Definition of the City class"""
+"""
+Lists all States and corresponding Cities in the database hbtn_0e_101_usa.
+"""
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from relationship_state import State
+from relationship_city import City
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+if __name__ == "__main__":
+    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
+                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-Base = declarative_base()
-
-
-class City(Base):
-    """Class City"""
-
-    __tablename__ = 'cities'
-    id = Column(Integer, autoincrement=True,
-                primary_key=True, nullable=False, unique=True)
-    name = Column(String(128), nullable=False)
-    state_id = Column(Integer, ForeignKey('states.id'), nullable=False)
+    for state in session.query(State).order_by(State.id):
+        print("{}: {}".format(state.id, state.name))
+        for city in state.cities:
+            print("    {}: {}".format(city.id, city.name))
