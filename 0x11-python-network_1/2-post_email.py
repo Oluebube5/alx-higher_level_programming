@@ -1,18 +1,14 @@
 #!/usr/bin/python3
-"""Takes in a string and sends a search request to the Star Wars API"""
-
+"""Takes in a URL and an email, sends a POST request to the passed URL with the
+email as a parameter, and displays the body of the response"""
 if __name__ == "__main__":
-    import requests
+    import urllib.request
+    import urllib.parse
     import sys
 
-    r = requests.get('https://swapi.co/api/people/?search={}'
-                     .format(sys.argv[1])).json()
-    print('Number of results: {}'.format(r.get('count')))
-    while True:
-        res = r.get('results')
-        for re in res:
-            print(re.get('name'))
-        if r.get('next') is None:
-            break
-        else:
-            r = requests.get(r.get('next')).json()
+    value = {'email': sys.argv[2]}
+    data = urllib.parse.urlencode(value)
+    data = data.encode('ascii')
+    req = urllib.request.Request(sys.argv[1], data)
+    with urllib.request.urlopen(req) as response:
+        print(response.read().decode("utf-8", "replace"))
